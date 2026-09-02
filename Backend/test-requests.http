@@ -1,0 +1,28 @@
+### Crear un usuario (insert)
+POST http://localhost:8080/api/usuarios
+Content-Type: application/json
+
+{
+  "nombre": "Juan Perez",
+  "email": "juan@test.com"
+}
+
+### Listar usuarios (select)
+GET http://localhost:8080/api/usuarios
+
+### Ejemplo con email duplicado (debe responder 400)
+POST http://localhost:8080/api/usuarios
+Content-Type: application/json
+
+{
+  "nombre": "Juan Perez",
+  "email": "juan@test.com"
+}
+
+### Ejemplo con campo faltante (debe responder 400)
+POST http://localhost:8080/api/usuarios
+Content-Type: application/json
+
+{
+  "nombre": "Maria Lopez"
+}
