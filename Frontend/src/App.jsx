@@ -9,6 +9,11 @@ function App() {
 
   return (
     <>
+
+
+
+
+
       <section id="center">
         <div className="hero">
           <img src={heroImg} className="base" width="170" height="179" alt="" />
@@ -29,6 +34,8 @@ function App() {
           Count is {count}
         </button>
       </section>
+
+      <h1>Commit </h1>
 
       <div className="ticks"></div>
 
