@@ -1,0 +1,82 @@
+@startuml components_architecture
+
+' Component + deployment diagram
+' Video game tracking platform
+' Render: https://www.plantuml.com/plantuml or the PlantUML VS Code extension
+
+skinparam componentStyle rectangle
+skinparam linetype ortho
+
+actor "User / Guest" as user
+
+node "Cloudflare Pages" as cloudflare {
+  component "Frontend (React)" as frontend
+}
+
+node "Railway (development)\n--> Hetzner VPS (production, ~100 users)" as backend_host {
+
+  component "Spring Boot API" as api {
+
+    package "users" {
+      component "UserController" as uc
+      component "UserService" as us
+      component "UserRepository" as ur
+      uc -down-> us
+      us -down-> ur
+    }
+
+    package "games" {
+      component "GameController" as jc
+      component "GameService" as js
+      component "GameRepository" as jr
+      jc -down-> js
+      js -down-> jr
+    }
+
+    package "ratings" {
+      component "RatingController" as cc
+      component "RatingService" as cs
+      component "RatingRepository" as cr
+      cc -down-> cs
+      cs -down-> cr
+    }
+
+    package "reviews" {
+      component "ReviewController" as rc
+      component "ReviewService" as rs
+      component "ReviewRepository" as rr
+      rc -down-> rs
+      rs -down-> rr
+    }
+
+    component "Flyway\n(versioned migrations)" as flyway
+  }
+}
+
+node "Supabase (now)\n--> Self-hosted Postgres on VPS (later)" as db_host {
+  database "PostgreSQL" as postgres
+}
+
+user --> frontend : HTTPS
+frontend --> api : REST / JSON (JWT)
+
+ur --> postgres : JPA
+jr --> postgres : JPA
+cr --> postgres : JPA
+rr --> postgres : JPA
+flyway ..> postgres : applies versioned\nschema
+
+note right of backend_host
+  Only the Repository knows
+  about the database. Controller
+  and Service do not change when
+  migrating from Supabase to a VPS.
+end note
+
+note right of db_host
+  Real Postgres on both sides:
+  migration is pg_dump / pg_restore
+  + Flyway recreates the schema.
+end note
+
+@enduml
