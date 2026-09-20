@@ -1,9 +1,8 @@
+import { RouterProvider } from "react-router";
+import router from "./routes";
+
 function App() {
-  return (
-    <>
-      <h1>MyGameVault</h1>
-    </>
-  )
+  return <RouterProvider router={router} />;
 }
 
-export default App
+export default App;
