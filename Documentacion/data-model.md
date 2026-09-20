@@ -80,7 +80,7 @@ Represents each user's personal list (status + dates + favorite).
 | status | enum('playing','completed','on_hold','dropped','plan_to_play') | NOT NULL | BR-11 |
 | favorite | boolean | NOT NULL, DEFAULT false | BR-13 |
 | start_date | date | NULL | |
-| end_date | date | NULL | BR-12: end_date >= start_date (validate at application level or via CHECK if the engine supports it) |
+| end_date | date | NULL | BR-12: guaranteed by CHECK `ck_user_game_list_date_order` (`start_date IS NULL OR end_date IS NULL OR end_date >= start_date`) |
 | updated_at | timestamp | NOT NULL, DEFAULT now() | |
 
 **Composite constraint:** `UNIQUE (user_id, game_id)` — a game can only have one status at a time per user (BR-11)
@@ -131,3 +131,18 @@ For the expected MVP size, option 1 (computed on the fly with an index on `game_
 
 - **BR-05**: are a deleted user's reviews/ratings cascade-deleted or anonymized? Modeled above with `deleted_at` (soft delete) on `users`, which allows anonymizing instead of deleting — but the exact display policy for `users.deleted_at IS NOT NULL` still needs to be decided.
 - If the external API is integrated later, `external_id` is already in place to map the synced record without touching the rest of the schema.
+
+---
+
+## Implementation notes (Python + SQLAlchemy backend)
+
+These formalize choices already applied when generating the initial Alembic migration (rev `0001`), so the docs and the schema stay aligned:
+
+- **Timestamps** are stored as `timestamptz` (`timestamp` in the tables above is implemented as `TIMESTAMP WITH TIME ZONE` / `sa.DateTime(timezone=True)`), with `DEFAULT now()` as documented.
+- **Enums** (`role`, `profile_visibility`, `status`) are native PostgreSQL `ENUM` types. The type for `users.role` is named `user_role` and the type for `user_game_list.status` is named `game_list_status`, so the DB-level names don't collide with column names.
+- **Extra indexes beyond those listed above**, added to serve reads without relying on leading-column order of composite keys:
+  - `ratings(game_id)` — supports the on-the-fly `AVG(value)` per game (option 1, BR-10). The `UNIQUE (user_id, game_id)` does not cover it because it starts with `user_id`.
+  - `reviews(game_id)` — FR-05 (reviews listed per game).
+  - `games_genres(genre_id)` — FR-02/NFR-19 (filter by genre); the composite PK only covers lookups starting by `game_id`.
+- **BR-12 (dates order)** is guaranteed at the DB level via the named CHECK `ck_user_game_list_date_order` on `user_game_list`.
+- **Open item FR-04**: the requirements mention screenshots for the game detail page, but there is no field/table for covers or screenshots in the model. It will need a decision and a schema change before any image-related feature is built.

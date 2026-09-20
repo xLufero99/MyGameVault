@@ -1,0 +1,13 @@
+# Entorno y secretos (NFR-08)
+.env
+
+# Entorno virtual
+.venv/
+
+# Cachés de Python
+__pycache__/
+*.pyc
+
+# Cachés de herramientas
+.pytest_cache/
+.ruff_cache/
