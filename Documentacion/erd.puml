@@ -1,0 +1,109 @@
+@startuml erd_videogames
+
+' Entity-Relationship Diagram - Video game tracking platform
+' Render: plantuml erd.puml (or paste into https://www.plantuml.com/plantuml)
+
+hide circle
+skinparam linetype ortho
+
+entity "users" as users {
+  * id : UUID <<PK>>
+  --
+  * email : varchar(255) <<UNIQUE>>
+  * username : varchar(30) <<UNIQUE>>
+  * password_hash : varchar(255)
+  avatar_url : varchar(500)
+  bio : text
+  * role : enum('user','admin')
+  * profile_visibility : enum('public','private')
+  * created_at : timestamp
+  deleted_at : timestamp
+}
+
+entity "genres" as genres {
+  * id : UUID <<PK>>
+  --
+  * name : varchar(50) <<UNIQUE>>
+}
+
+entity "platforms" as platforms {
+  * id : UUID <<PK>>
+  --
+  * name : varchar(50) <<UNIQUE>>
+}
+
+entity "games" as games {
+  * id : UUID <<PK>>
+  --
+  * title : varchar(255)
+  * year : int
+  synopsis : text
+  developer : varchar(255)
+  * platform_id : UUID <<FK>>
+  external_id : varchar(100) <<UNIQUE>>
+  * created_by : UUID <<FK>>
+  * created_at : timestamp
+  --
+  <<UNIQUE (title, year, platform_id)>>
+}
+
+entity "games_genres" as games_genres {
+  * game_id : UUID <<PK, FK>>
+  * genre_id : UUID <<PK, FK>>
+}
+
+entity "user_game_list" as user_game_list {
+  * id : UUID <<PK>>
+  --
+  * user_id : UUID <<FK>>
+  * game_id : UUID <<FK>>
+  * status : enum('playing','completed','on_hold','dropped','plan_to_play')
+  * favorite : boolean
+  start_date : date
+  end_date : date
+  * updated_at : timestamp
+  --
+  <<UNIQUE (user_id, game_id)>>
+}
+
+entity "ratings" as ratings {
+  * id : UUID <<PK>>
+  --
+  * user_id : UUID <<FK>>
+  * game_id : UUID <<FK>>
+  * value : int <<CHECK 1-10>>
+  * created_at : timestamp
+  * updated_at : timestamp
+  --
+  <<UNIQUE (user_id, game_id)>>
+}
+
+entity "reviews" as reviews {
+  * id : UUID <<PK>>
+  --
+  * user_id : UUID <<FK>>
+  * game_id : UUID <<FK>>
+  * content : text
+  * created_at : timestamp
+  * updated_at : timestamp
+  deleted_at : timestamp
+  --
+  <<UNIQUE (user_id, game_id)>>
+}
+
+' Relationships
+users ||--o{ games : "creates (admin)"
+platforms ||--o{ games : "has"
+games ||--o{ games_genres : ""
+genres ||--o{ games_genres : ""
+
+users ||--o{ user_game_list : "adds"
+games ||--o{ user_game_list : "is added"
+
+users ||--o{ ratings : "rates"
+games ||--o{ ratings : "receives"
+
+users ||--o{ reviews : "writes"
+games ||--o{ reviews : "receives"
+
+@enduml
