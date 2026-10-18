@@ -16,8 +16,3 @@ def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
-@app.get("/dilan")
-def dilan() -> dict[str, str]:
-    return {"status": "DILAN"}
-
-
