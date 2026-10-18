@@ -5,8 +5,19 @@ Primera entrega: únicamente GET /health. Los routers de los módulos
 """
 
 from fastapi import FastAPI
+from starlette.middleware.cors import CORSMiddleware
+
+from app.core.config import settings
 
 app = FastAPI(title="MyGameVault API", version="0.1.0")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.allowed_origins_list,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 """Ruta de salud de la API."""
