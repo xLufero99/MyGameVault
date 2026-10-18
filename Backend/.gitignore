@@ -11,3 +11,6 @@ __pycache__/
 # Cachés de herramientas
 .pytest_cache/
 .ruff_cache/
+# Artefactos de Maven/Java
+target/
+*.class
