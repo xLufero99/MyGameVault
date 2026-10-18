@@ -9,6 +9,10 @@ from fastapi import FastAPI
 app = FastAPI(title="MyGameVault API", version="0.1.0")
 
 
+"""Ruta de salud de la API."""
+
 @app.get("/health")
 def health() -> dict[str, str]:
     return {"status": "ok"}
+
+
