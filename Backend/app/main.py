@@ -13,6 +13,6 @@ app = FastAPI(title="MyGameVault API", version="0.1.0")
 
 @app.get("/health")
 def health() -> dict[str, str]:
-    return {"status": "ok"}
+    return {"status": "TODO CORRECTO"}
 
 
