@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap');
+@import 'tailwindcss';
+
+:root {
+  --px-bg: #08080f;
+  --px-card: #10101a;
+  --px-card2: #18182a;
+  --px-border: #23233a;
+  --px-primary: #e040fb;
+  --px-cyan: #00e5ff;
+  --px-green: #69ff47;
+  --px-yellow: #ffeb3b;
+  --px-red: #ff4757;
+  --px-text: #e8e8f0;
+  --px-muted: #55556e;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--px-bg);
+  color: var(--px-text);
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: #0c0c14; }
+::-webkit-scrollbar-thumb { background: #23233a; }
+::-webkit-scrollbar-thumb:hover { background: var(--px-primary); }
+
+.font-pixel { font-family: 'Press Start 2P', monospace; }
+.font-mono-custom { font-family: 'Space Mono', monospace; }
+
+/* Scanlines */
+.scanlines { position: relative; }
+.scanlines::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(0,0,0,0.07) 3px,
+    rgba(0,0,0,0.07) 4px
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Neon glows */
+.glow-primary { text-shadow: 0 0 16px rgba(224,64,251,0.9), 0 0 40px rgba(224,64,251,0.4); }
+.glow-cyan    { text-shadow: 0 0 16px rgba(0,229,255,0.9), 0 0 40px rgba(0,229,255,0.4); }
+.glow-green   { text-shadow: 0 0 12px rgba(105,255,71,0.9), 0 0 30px rgba(105,255,71,0.4); }
+
+.shadow-primary { box-shadow: 0 0 0 1px var(--px-primary), 0 0 18px rgba(224,64,251,0.25); }
+.shadow-cyan    { box-shadow: 0 0 0 1px var(--px-cyan), 0 0 18px rgba(0,229,255,0.25); }
+.shadow-card-hover { box-shadow: 0 0 18px rgba(224,64,251,0.2); }
+
+/* Animations */
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+.cursor-blink { animation: blink 1s step-end infinite; }
+
+@keyframes flicker {
+  0%,94%,100%{opacity:1} 95%{opacity:.7} 96%{opacity:1} 98%{opacity:.65} 99%{opacity:1}
+}
+.crt { animation: flicker 9s infinite; }
+
+@keyframes slide-up {
+  from { opacity:0; transform:translateY(14px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.animate-slide-up { animation: slide-up .35s ease forwards; }
+
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+.animate-fade { animation: fadeIn .25s ease forwards; }
+
+.px-section-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+}
