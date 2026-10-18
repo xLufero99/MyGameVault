@@ -7,5 +7,7 @@ pytest carga este conftest antes que los módulos de test.
 
 import os
 
-os.environ.setdefault("DATABASE_URL", "sqlite+pysqlite:///:memory:")
-os.environ.setdefault("JWT_SECRET", "test-secret")
+os.environ.setdefault("SUPABASE_PROJECT_REF", "test-ref")
+os.environ.setdefault("SUPABASE_DB_PASSWORD", "test-password")
+os.environ.setdefault("SUPABASE_URL", "https://test.supabase.co")
+os.environ.setdefault("SUPABASE_SECRET_KEY", "test-secret")
